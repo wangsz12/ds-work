@@ -1,0 +1,27 @@
+{
+  "name": "dswork_backend",
+  "version": "0.1.0",
+  "private": true,
+  "author": "wangsz12",
+  "scripts": {
+    "start": "nodemon --exec babel-node app.js",
+    "rebuild": "node-gyp rebuild",
+    "prod": "pm2 start pm2.conf.json"
+  },
+  "gypfile": true,
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "bindings": "^1.5.0",
+    "koa": "^2.13.0",
+    "koa-bodyparser": "^4.3.0",
+    "koa-logger": "^2.0.1",
+    "koa-router": "^10.0.0",
+    "koa2-cors": "^2.0.6",
+    "mongodb": "^3.6.3",
+    "node-addon-api": "^3.0.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "name": "dswork-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "author": "wangsz12",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build"
+  },
+  "dependencies": {
+    "axios": "^0.21.0",
+    "core-js": "^3.6.5",
+    "element-ui": "^2.14.1",
+    "node-addon-api": "^3.0.2",
+    "node-sass": "^5.0.0",
+    "nprogress": "^0.2.0",
+    "sass-loader": "^10.0.5",
+    "vue": "^2.6.11",
+    "vue-toastification": "^1.7.8",
+    "vuex": "^3.5.1"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "~4.5.0",
+    "@vue/cli-plugin-eslint": "~4.5.0",
+    "@vue/cli-service": "~4.5.0",
+    "babel-eslint": "^10.1.0",
+    "babel-plugin-component": "^1.1.1",
+    "eslint": "^6.7.2",
+    "eslint-plugin-vue": "^6.2.2",
+    "vue-template-compiler": "^2.6.11"
+  }
+}
