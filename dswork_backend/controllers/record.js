@@ -1,3 +1,4 @@
+const moment = require('moment')
 const MazeRecord = require('../models/MazeRecord')
 const logger = require('../plugins/logger')
 const { trueReturn, falseReturn } = require('../plugins/result')
@@ -48,33 +49,33 @@ const algos = [
  */
 
 async function getAllRecords(ctx, next) {
-  await MazeRecord.getAllRecord()
-    .then((res) => {
-      ctx.response.body = trueReturn({
-        records: res.map((item) => {
-          const date = new Date(item.time)
-          let hour = date.getHours()
-          if (hour < 10) hour = `0${hour}`
-          let minute = date.getMinutes()
-          if (minute < 10) minute = `0${minute}`
-          let second = date.getSeconds()
-          if (second < 10) second = `0${second}`
-          const time = `${date.toISOString().substr(0, 10)} ${hour}:${minute}:${second}`
-          return {
-            id: item._id,
-            size: `${item.size.height} × ${item.size.width}`,
-            algorithm: algos.filter((_item) => { return _item.value === item.algorithm })[0].name,
-            time
-          }
-        })
-      })
+  const result = await MazeRecord.getAllRecord()
+  ctx.response.body = trueReturn({
+    records: result.map((item) => {
+      return {
+        id: item._id,
+        size: `${item.size.height} × ${item.size.width}`,
+        algorithm: algos.filter((_item) => { return _item.value === item.algorithm })[0].name,
+        time: moment.parseZone(item.time).format('YYYY[-]MM[-]DD HH[:]mm[:]ss')
+      }
     })
+  })
+  await next()
+}
+
+async function getRecord(ctx, next) {
+  const { id } = ctx.request.body
+  const result = await MazeRecord.getRecord({ id })
+  ctx.response.body = trueReturn({
+    records: result
+  })
   await next()
 }
 
 module.exports = {
   prefix,
   handlers: {
-    'GET /getAllRecords': getAllRecords
+    'GET /getAllRecords': getAllRecords,
+    'POST /getRecord': getRecord
   }
 }

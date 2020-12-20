@@ -41,7 +41,8 @@ export default {
         estimateCost: -1,
         totalCost: -1
       },
-      stepIndex: -1
+      stepIndex: -1,
+      cell__style: `background-color: ${colorMap[this.which]}`
     }
   },
   props: {
@@ -145,10 +146,11 @@ export default {
     }
   },
   computed: {
-    ...mapState(['lastStart', 'lastFinish', 'cellAssignment', 'disableRightMenu']),
-
-    cell__style() {
-      return `background-color: ${colorMap[this.which]}`
+    ...mapState(['lastStart', 'lastFinish', 'cellAssignment', 'disableRightMenu'])
+  },
+  watch: {
+    which(newVal) {
+      this.cell__style = `background-color: ${colorMap[newVal]}`
     }
   },
   mounted() {

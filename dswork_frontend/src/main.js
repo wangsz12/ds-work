@@ -3,7 +3,8 @@ import App from './App.vue'
 import store from './store/index'
 
 import axiosConfig from './plugins/axios'
-Vue.use(axiosConfig)
+import APIConfig from './plugins/api'
+Vue.use(axiosConfig).use(APIConfig)
 
 // nprogress
 import NProgress from 'nprogress'

@@ -6,5 +6,8 @@ export default {
   },
   getAllRecords() {
     return Axios.get('/dswork/getAllRecords')
+  },
+  getRecord(criteria) {
+    return Axios.post('/dswork/getRecord', criteria)
   }
 }

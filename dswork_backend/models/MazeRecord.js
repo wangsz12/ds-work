@@ -1,3 +1,4 @@
+const { ObjectId } = require('mongodb')
 const logger = require('../plugins/logger')
 const mongo = require('../plugins/mongodb')
 
@@ -17,7 +18,11 @@ class MazeRecord {
   }
 
   static async getAllRecord() {
-    return mongo.find('record')
+    return (await mongo.find('record')).sort((a, b) => new Date(b.time) - new Date(a.time)).slice(0, 10)
+  }
+
+  static async getRecord(criteria) {
+    return await mongo.find('record', { _id: ObjectId(criteria.id) })
   }
 }
 

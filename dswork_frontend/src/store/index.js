@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import $api from '../api/index'
 
 Vue.use(Vuex)
 
@@ -55,30 +54,6 @@ export default new Vuex.Store({
     },
     setMazeSize({ commit }, newMazeSize) {
       commit('setMazeSize', newMazeSize)
-    },
-    solveMaze(ctx, payload) {
-      return $api.solveMaze(payload)
-        .then((res) => {
-          if (res.data.status === false) {
-            return Promise.reject(res.data.msg)
-          }
-          return Promise.resolve(res)
-        })
-        .catch((err) => {
-          return Promise.reject(err)
-        })
-    },
-    getAllRecords() {
-      return $api.getAllRecords()
-        .then((res) => {
-          if (res.data.status === false) {
-            return Promise.reject(res.data.msg)
-          }
-          return Promise.resolve(res)
-        })
-        .catch((err) => {
-          return Promise.reject(err)
-        })
     }
   }
 })

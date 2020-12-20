@@ -1,94 +1,92 @@
 <template>
-  <div id="app">
-    <div class="container">
-      <div class="main-box">
-        <div class="title">
-          <span>数据结构课设 — 基于搜索技术的迷宫寻路系统</span>
-          <span>组员：金成洋 刘桢谋 滕邱鹏 王盛泽 张昕瑶 张伊男</span>
-        </div>
-        <div class="maze-box">
-          <Maze ref="maze"></Maze>
-        </div>
-        <div class="control-panel">
-          <div class="left">
-            <div class="maze-panel">
-              <el-divider content-position="center">设置迷宫参数</el-divider>
-              <div class="input-box">
-                <span>设置高度：</span>
-                <el-input
-                  v-model="tmp.height"
-                  class="input"
-                  size="medium"
-                  maxlength="2"
-                  type="number"
-                >
-                  <template slot="append">格</template>
-                </el-input>
-              </div>
-              <div class="input-box">
-                <span>设置宽度：</span>
-                <el-input
-                  v-model="tmp.width"
-                  class="input"
-                  size="medium"
-                  maxlength="2"
-                  type="number"
-                >
-                  <template slot="append">格</template>
-                </el-input>
-              </div>
-              <div class="btn-box">
-                <el-button
-                  @click="changeMazeSize"
-                  type="primary"
-                  :round="true"
-                >确定</el-button>
-                <el-button
-                  @click="clearMaze(true)"
-                  type="danger"
-                  :round="true"
-                >清空迷宫</el-button>
-                <el-button
-                  @click="randomMaze"
-                  type="primary"
-                  :round="true"
-                  disabled
-                >随机</el-button>
-              </div>
+  <div class="container">
+    <div class="main-box">
+      <div class="title">
+        <span>数据结构课设 — 基于搜索技术的迷宫寻路系统</span>
+        <span>组员：金成洋 刘桢谋 滕邱鹏 王盛泽 张昕瑶 张伊男</span>
+      </div>
+      <div class="maze-box">
+        <Maze ref="maze"></Maze>
+      </div>
+      <div class="control-panel">
+        <div class="left">
+          <div class="maze-panel">
+            <el-divider content-position="center">设置迷宫参数</el-divider>
+            <div class="input-box">
+              <span>设置高度：</span>
+              <el-input
+                v-model="tmp.height"
+                class="input"
+                size="medium"
+                maxlength="2"
+                type="number"
+              >
+                <template slot="append">格</template>
+              </el-input>
             </div>
-          </div>
-          <div class="right">
-            <div class="algo-panel">
-              <el-divider content-position="center">选择求解算法</el-divider>
-              <el-select v-model="algoSelected" placeholder="请选择求解算法" style="max-width: 60%;" :disabled="algoSelectDisabled">
-                <el-option
-                  v-for="(item, index) in algos"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.value">
-                </el-option>
-              </el-select>
+            <div class="input-box">
+              <span>设置宽度：</span>
+              <el-input
+                v-model="tmp.width"
+                class="input"
+                size="medium"
+                maxlength="2"
+                type="number"
+              >
+                <template slot="append">格</template>
+              </el-input>
+            </div>
+            <div class="btn-box">
               <el-button
-                @click="solveHdl"
+                @click="changeMazeSize"
                 type="primary"
                 :round="true"
-                v-if="!algoSelectDisabled"
               >确定</el-button>
               <el-button
-                @click="reselect"
+                @click="clearMaze(true)"
                 type="danger"
                 :round="true"
-                v-if="algoSelectDisabled"
-              >重新选择</el-button>
-            </div>
-            <div class="history-panel">
-              <el-divider content-position="center">查看搜索历史</el-divider>
+              >清空迷宫</el-button>
               <el-button
-                @click="showHistory"
+                @click="randomMaze"
                 type="primary"
                 :round="true"
-              >查看搜索历史</el-button>
+                disabled
+              >随机</el-button>
             </div>
+          </div>
+        </div>
+        <div class="right">
+          <div class="algo-panel">
+            <el-divider content-position="center">选择求解算法</el-divider>
+            <el-select v-model="algoSelected" placeholder="请选择求解算法" style="max-width: 60%;" :disabled="algoSelectDisabled">
+              <el-option
+                v-for="(item, index) in algos"
+                :key="index"
+                :label="item.name"
+                :value="item.value">
+              </el-option>
+            </el-select>
+            <el-button
+              @click="solveHdl"
+              type="primary"
+              :round="true"
+              v-if="!algoSelectDisabled"
+            >确定</el-button>
+            <el-button
+              @click="reselect"
+              type="danger"
+              :round="true"
+              v-if="algoSelectDisabled"
+            >重新选择</el-button>
+          </div>
+          <div class="history-panel">
+            <el-divider content-position="center">查看搜索历史</el-divider>
+            <el-button
+              @click="showHistory"
+              type="primary"
+              :round="true"
+            >查看搜索历史</el-button>
           </div>
         </div>
       </div>
@@ -218,13 +216,17 @@ export default {
       }
       this.finishCode = finish.x * this.mazeSize.width + finish.y + 1;
 
-      this.solveMaze({
+      this.$api.solveMaze({
         algorithm: this.algoSelected,
         mazeData,
         size: this.mazeSize,
         start,
         finish
       }).then((res) => {
+        if (!res.data.status) {
+          return Promise.reject(res.data.msg)
+        }
+
         this.algoSelectDisabled = true
 
         const { steps, process } = res.data.data
@@ -297,10 +299,13 @@ export default {
       }, drawInterval)
     },
     drawBFS(start, finish) {
-      let newProcess = new Array(this.process[this.process.length - 1].time + 1)
-      for (let i = 1; i < newProcess.length; i++) {
+      const maxTime = this.process.sort((a, b) => b.time - a.time)[0].time
+
+      let newProcess = new Array(maxTime + 1)
+      for (let i = 0; i < newProcess.length; i++) {
         newProcess[i] = new Array()
       }
+
       this.process.forEach((item) => newProcess[item.time].push(item))
 
       let timeIndex = 1
@@ -414,18 +419,56 @@ export default {
       }
     },
     showHistory() {
-      this.getAllRecords()
+      const that = this
+
+      this.$api.getAllRecords()
         .then((res) => {
+          if (!res.data.status) {
+            return Promise.reject(res.data.msg)
+          }
+
           this.$MsgBox({
             title: '搜索历史',
             message: this.$createElement('History',
               {
                 props: {
                   tableData: res.data.data.records
+                },
+                on: {
+                  closeMsgBox(feedback) {
+                    feedback.then((res) => {
+                      console.log('res: ', res);
+                      that.tmp = res.size
+                      that.changeMazeSize()
+
+                      res.maze.forEach((item, index) => {
+                        const refStr = `cell${index + 1}`
+                        if (item) {
+                          that.$refs.maze.$refs[refStr][0].setAsWall()
+                        }
+                        else {
+                          if (index === (res.start.x * that.mazeSize.width + res.start.y)) {
+                            that.$refs.maze.$refs[refStr][0].setAsStart()
+                          }
+                          else if (index === (res.finish.x * that.mazeSize.width + res.finish.y)) {
+                            that.$refs.maze.$refs[refStr][0].setAsFinish()
+                          }
+                          else {
+                            that.$refs.maze.$refs[refStr][0].setAsSpace()
+                          }
+                        }
+                      })
+                    })
+                  }
                 }
               }),
             customClass: 'message-box'
           })
+          .then(() => {})
+          .catch(() => {})
+        })
+        .catch((err) => {
+          this.$toast.error(err.message)
         })
     }
   },
@@ -445,12 +488,11 @@ export default {
 
 <style lang="scss" scoped>
   .container {
-    height: 100%;
-    min-height: 700px;
+    min-height: 100vh;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: pink;
+    background: linear-gradient(-135deg, #C850C0, #4158D0);
 
     .main-box {
       min-width: 55rem;
@@ -459,6 +501,7 @@ export default {
       border-radius: 10px;
       box-shadow: 1px 3px 15px -5px rgba(0,0,0,.4);
       padding: .5rem 2rem;
+      margin: 3rem auto;
 
       .title {
         text-align: center;

@@ -24,13 +24,18 @@
           prop="operation"
           label="操作"
           align="center"
-        />
+        >
+          <template slot-scope="record">
+            <el-button type="primary" size="small" @click="viewRecord(record.row)">查看</el-button>
+          </template>
+        </el-table-column>
       </el-table>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
 export default {
   name: 'History',
   data() {
@@ -41,6 +46,25 @@ export default {
   props: {
     tableData: {
       type: Array
+    }
+  },
+  methods: {
+    ...mapActions(['setMazeSize']),
+
+    viewRecord(record) {
+      this.$api.getRecord({ id: record.id })
+        .then((res) => {
+          if (!res.data.status) {
+            return Promise.reject(res.data.msg)
+          }
+
+          const record = res.data.data.records[0]
+          
+          this.$emit('closeMsgBox', Promise.resolve(record))
+        })
+        .catch((err) => {
+          this.$toast.error(err.message)
+        })
     }
   }
 }
